@@ -19,13 +19,15 @@ define jxr = Character("{color=#1952e3}Roderick{/color} {color=#ffffff}and{/colo
 define crowd = Character("Crowd")
 
 #positions
-define farrightpos = Position(xpos=0.95)
-define farleftpos = Position(xpos=0.05)
+define farrightpos = Position(xpos= 0.99)
+define farleftpos = Position(xpos= 0)
+define roderickPos = Position(xpos= 0.33)
 
 
 #effects
 define trans = Fade(0.5, 1.0, 0.5)
-define flash = Fade(0.25, 0.0, 0.25, color = "#fff")
+define wFlash = Fade(0.25, 0.0, 0.25, color = "#fff")
+define bFlash = Fade(0.25, 0.0, 0.25, color = "#000000")
 define scan = Fade(0.5, 0.25, 0.5, color = "#ff0000")
 define blackOut = Fade(0.5, 0.0, 0.5, color = "#000000")
 
@@ -38,6 +40,7 @@ init:
 
 #Chapter 0: Prologue
 label start:
+
     scene black
     pause 1.0 
 
@@ -125,10 +128,10 @@ label Dont_Yield:
     hide screen chapter_intro_1
     window show
 
-    scene bg baracks with trans
+    scene BaseCamp with trans
     pause 2.0
 
-    show hartley with dissolve 
+    show hartley with dissolve
     pause 0.5
 
     h "...OKAY MEN! \nLET'S SHOW THE ENEMY TODAY THAT WE WON'T GO DOWN WITHOUT A FIGHT!" with dissolve
@@ -148,8 +151,8 @@ label Dont_Yield:
     hide hartley with dissolve
     pause 1.0 
 
-    show roderick at left with moveinleft
     show fv7 at farleftpos with moveinleft
+    show roderick at roderickPos with moveinleft
     pause 1.0 
 
     r "Okay buddy {w=1.0} last check... {w} \nThere! {w=1.0} \nall set!"
@@ -162,11 +165,14 @@ label Dont_Yield:
 
     f "No need to worry we w..."
 
-    show joey at center with moveinright
+    show joey_smirk at center with moveinright
     show wlf5 at right with moveinright
 
     j "Oh come on, Roderick, stop treating your Biotech like a pet."
     j "It's a weapon, not your furry best friend."
+
+    hide Roderick
+    show roderick_angry at roderickPos 
 
     r "Get lost Joey"
 
@@ -177,7 +183,9 @@ label Dont_Yield:
     f "{i}growl*{/i}"
     w "{i}growl*{/i}"
 
-    show hartley at farrightpos with moveinright
+    show hartley_angry at farrightpos with moveinright
+    hide roderick_angry
+    show roderick at roderickPos 
 
     h "Quit arguing you two!"
     h "I'm sick of this rivalry"
@@ -185,8 +193,377 @@ label Dont_Yield:
 
     jxr "{b}Yes SIR{/b}"
 
-    hide hartley with moveoutright
+    hide hartley_angry with moveoutright
 
+    j "W.LF5 come"
+    w "*nod*"
+
+    hide joey_smirk with moveoutright
+    hide wlf5 with moveoutright
+
+    h "Come on buddy you heard hartley"
+
+    f "Alright"
+
+    scene black with dissolve
+    jump battlefield
+    
+#Chapter 1 
+label battlefield:
+
+    scene black with dissolve
+    show text "{i}'Location: Border Forest Dadrium/Luhwhium, 07:09 AM'\ninside of pantzer vehicle{/i} "
+
+    #TODO pantzer sound
+
+    pause 3.0
+
+    hide text with dissolve
+    pause 0.5
+
+    h "ALRIGHT, THIS IS THE MOMENT WE HAVE TRAINED FOR" 
+    h "GET READY. . ."
+
+    scene bg forest with dissolve
+
+    h "CHARGEEEE"
+
+    play sound "battlefieldGunFire.mp3"
+
+    show roderick_angry at roderickPos with moveinleft
+    show fv7_angry at farleftpos with moveinleft
+
+    r "F.V7 ON OUR LEFT!"
+
+    show enemy at farrightpos with moveinright
+
+    show fv7_angry at farrightpos with move
+    #TODO bite sound
+
+    with bFlash 
+    with hpunch
+
+    show fv7_angry at farleftpos with move
+    hide enemy with dissolve
+
+    pause 1.0
+
+    hide roderick_angry
+    show roderick_happy at roderickPos
+
+    r "Good job buddy"
+    
+    show joey_smirk at right with moveinright
+
+    j "Guess you made a pretty good killing machine of him after all"
+
+    hide roderick_happy 
+    show roderick_angry at roderickPos
+
+    f "{i}growl*{/i}"
+
+    r "Shut up Joey"
+
+    hide joey_smirk 
+    show joey_angry at right
+
+    j "Pfftt"
+
+    hide joey_angry with moveoutright
+    pause 1.0
+
+    scene bg forestdark with dissolve #TIP: switching scenes makes all characters dissapear as wel!!
+
+    show text "{i}'The battle goes on. Shooting is heard all around the forest'{/i}"
+    pause 3.0
+
+    scene bg forest with dissolve
+
+    show hartley_worried with dissolve
+    h "NO… WE'RE LOSING.. "
+    h "DON'T YIELD!"
+
+    hide hartley_worried with dissolve
+
+    show roderick_angry at center with moveinleft
+    pause 1.0
+
+    play sound "gunshot.mp3"
+    with wFlash 
+    hide roderick_angry
+    show roderick_hurt at center 
+    with hpunch
+
+    show roderick_hurt at roderickPos with move
+    
+    r "AARRRGGHHHHhhh"
+
+    show fv7 at right with moveinright:
+        xzoom -1
+
+    f "RODERICK!"
+    f "roderick can you stand?"
+
+    r "AAARGHH no. . . "
+    r "I can't feel my leg {i}huff{/i}"
+
+    #choice 1
+    menu Roderick_got_shot:
+        "Roderick got shot!" 
+
+        "Treat Roderick's Shotwound": #Roderick dies due to an enemy
+            jump help_roderick
+
+        "Call out for private Joey": #Roderick dies due to joey and Fv7 takes 20% damage
+            jump call_joey
+
+        "Stand your ground! keep fighting": #Roderick dies due to an enemy and Fv7 takes 50% damage
+            jump keep_fighting
+            
+    return
+
+label help_roderick:
+    f "Easy roderick im gonna move you behind that tree for cover"
+
+    show fv7 at roderickPos with move
+
+    hide fv7 
+    hide roderick_hurt 
+    with moveoutleft
+
+    #new scene setup
+    scene bg forest with dissolve
+    show fv7 at roderickPos:
+        xzoom -1
+    show roderick_hurt at roderickPos 
+    with moveinright
+    pause 0.5
+
+    show fv7 at center with move
+
+    f "Okay let me take a look"
+    f "{i}Initializing Medical Program. . . {/i}"
+
+    with scan
+
+    f "{i}Blood loss 20%%. . . \nBullet 53.49 millimeters deep \nBullet Retraction 'Possible'{/i}"
+
+    r "AAHHHHH URGGGHH, fuck that hurts"
+
+    f "{i}Bullet Retraction Succesfull. . . \nStarting wound closing program{/i}"
+    
+    r "AHHHH AUWAUWAUW THAT BURNS FV7!!"
+
+    f "{i}Medical Program Finished Succesfull{/n}"
+    f "Ofcourse it hurts its a wound laser, it welds the wound shut"
+
+    r "Well... pfft thanks im better now. still a little light headed"
+
+    show enemy at farrightpos with moveinright
+    f "OH NO RODERICK WATCH OU!"
+
+    with wFlash
+    #TODO Gunshot sound
+    play sound "gunshot.mp3"
+
+    show fv7 at farrightpos with move:
+        xzoom 1
+    pause 0.2
+    with hpunch
+    hide enemy with dissolve
+    show fv7 at right with move:
+        xzoom -1
+
+    pause 2.0
+    hide roderick_hurt with dissolve
+
+    f "RODERICK NOOO!!!"
+
+    pause 2.0
+
+    scene bg forestdark with dissolve
+
+    show text "Roderick was shot in the head" with dissolve
+    pause 3.0
+    
+    hide text with dissolve
+    pause 0.5
+
+    show text "FV.7 drags rodericks body out of the forest battlefield" with dissolve
+    pause 3.0
+
+    hide text with dissolve
+    pause 0.5
+
+    show text "FV.7 health: [fv7Health]%"
+    pause 3.0
+
+    return
+
+label call_joey:
+    hide roderick_hurt with dissolve
+    show fv7 at center with move:
+        xzoom -1
+
+    f "{i}Scanning for Help. . .{/i}"
+    with scan
+    f "{i}Private Joey is close-by. . . {/i}"
+    f "JOEY!"
+
+    show fv7 at left with move
+    show joey_smirk at right with moveinright
+
+    j "well, well, well is someone a little hurt?"
+
+    f "Joey this is serious you have to help us here?"
+
+    j "... and what if i don't?"
+
+    hide fv7 with dissolve
+    show roderick_hurt at left with dissolve
+
+    r "AARGhhh Joey...bastard... I always knew you would let me down when you have the chance"
+
+    hide roderick_hurt with dissolve
+    show fv7 at left with dissolve
+
+    f "Not helping a fellow comrade in battle is treason Joey"
+    f "You'd go to federal prison"
+
+    hide joey_smirk
+    show joey_angry at right
+
+    j "UGHH IM SO DONE WITH YOU STUPID FOX!"
+
+    show joey_angry at left with move
+    hide fv7 with moveoutleft
+    with hpunch
+    "{i}Joey kicks FV.7. The hard forcefull kick throws FV.7 against a tree and he collapses to the ground{/i}"
+    $ fv7Health -= 20
+    "{i}Fv.7 lost 20%% health, health: [fv7Health] {/i}"
+    show joey_angry at right with move
+    show roderick_hurt at left with dissolve
+
+    j "So nobody needs to know what happend here"
+    
+    r "Joey you fool, what the hell are you doing"
+
+    j "I have always lived in your shadow"
+    j "Everyone always looked up to you and saw potential in you"
+    j "And now they are thinking of makiung you a specialist..."
+    j "That should have been me"
+
+    r "Joey where are you going with this?"
+
+    j "Goodnight roderick"
+
+    play effects "gunshot.mp3" 
+    with wFlash
+
+    pause 2.0
+
+    scene bg forestdark with dissolve
+
+    show text "FV.7 wakes up and sees Rodericks lifeless body in the forest" with dissolve
+    pause 3.0
+    
+    hide text with dissolve
+    pause 0.5
+
+    show text "Roderick was shot in the head by Joey" with dissolve
+    pause 3.0
+    
+    hide text with dissolve
+    pause 0.5
+
+    show text "FV.7 drags rodericks body out of the forest battlefield" with dissolve
+    pause 3.0
+
+    hide text with dissolve
+    pause 0.5
+
+    show text "FV.7 health: [fv7Health]%"
+    pause 3.0
+
+    hide text with dissolve
+    pause 0.5
+
+    show text "FV.7 knows Joey is a traitor"
+    pause 3.0
+
+    return
+
+label keep_fighting:
+    f "Sorry Roderick it is simply too dangerous to treat your wounds here"
+    f "i am Initiating Protocol 14A, stand ground"
+    f "{i}Initializing Protocol 14A. . . {/i}"
+
+    r "We just hope for the best then...hmmpf"
+
+    hide Fv7 with dissolve
+    show enemy at farrightpos with moveinright
+
+    r "Don't get close bastard"
+
+    play sound "gunshot.mp3"
+    with wFlash
+
+    hide enemy with dissolve
+
+    r "That was close i dont know how long... huff... long we can fend them off"
+
+    f "We need to stand our grounds"
+
+    hide roderick_hurt with dissolve
+    show fv7 at left with dissolve
+
+    show enemy at farrightpos with moveinright
+
+    play sound "gunshot.mp3"
+    with wFlash
+
+    hide fv7 with dissolve
+    with hpunch
+    "{i}FV.7 got shot by an enemy soldier{/i}"
+    $ fv7Health -= 50
+    "{i}Fv.7 lost 50%% health, health: [fv7Health] {/i}"
+
+    show roderick_hurt at left with dissolve
+
+    r "FV.7 NOOO"
+
+    play sound "gunShotEmpty.mp3"
+
+    r "...no ammo..."
+
+    play sound "gunshot.mp3"
+    with wFlash
+
+    hide roderick_hurt with dissolve
+    hide enemy with dissolve
+
+    scene bg forestdark with dissolve
+
+    show text "FV.7 wakes up and sees Rodericks lifeless body in the forest" with dissolve
+    pause 3.0
+    
+    hide text with dissolve
+    pause 0.5
+
+    show text "Roderick was shot by an enemy soldier" with dissolve
+    pause 3.0
+    
+    hide text with dissolve
+    pause 0.5
+
+    show text "FV.7 drags rodericks body out of the forest battlefield" with dissolve
+    pause 3.0
+
+    hide text with dissolve
+    pause 0.5
+
+    show text "FV.7 health: [fv7Health]%"
+    pause 3.0
 
     return
 
@@ -207,6 +584,7 @@ screen chapter_intro_1(stage):
                     text "Don't Yield" size 30 xalign 0.5
                 elif i == 2:
                     text "{i}'Location: Border Barrack Dadrium, 05:59 AM'{/i}" size 30 xalign 0.5
+
 #     #Intro:
 #     scene black
 #     pause(1.0)
